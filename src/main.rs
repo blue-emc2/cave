@@ -11,10 +11,11 @@ fn main() {
   let stdin = stdin();
   let stdin = stdin.lock();
 
-  write!(stdout, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
+  write!(stdout, "{}", clear::All).unwrap();
+  write!(stdout, "{}", cursor::Hide).unwrap();
   stdout.flush().unwrap();
 
-  write!(stdout, "{}", "@").unwrap();
+  write!(stdout, "{} x={}, y={}", cursor::Goto(1, 10), 1, 1).unwrap();
   stdout.flush().unwrap();
 
   let mut keys = stdin.keys();
@@ -23,6 +24,10 @@ fn main() {
   let mut pos = (x, y);
 
   loop {
+    // Debug
+    write!(stdout, "{} x={}, y={}", cursor::Goto(1, 10), pos.0, pos.1).unwrap();
+    // stdout.flush().unwrap();
+
     let b = keys.next().unwrap().unwrap();
 
     if Char('q') == b {
@@ -33,27 +38,29 @@ fn main() {
       Up => (0, -1),
       Down => (0, 1),
       Left => (-1, 0),
-      Right => (0, 1),
+      Right => (1, 0),
       _ => (0, 0),
     };
 
     x += accel.0;
     y += accel.1;
+
+    if 1 > x {
+      x = 1;
+    } else if 1 > y {
+      y = 1;
+    }
+
     pos.0 = x;
     pos.1 = y;
 
     write!(
       stdout,
-      "{}{}{}",
-      clear::All,
+      "{}{}",
       "@",
       cursor::Goto(pos.0 as u16, pos.1 as u16)
     )
     .unwrap();
-
-    // Debug
-    // write!(stdout, "x={}, y={}", x, y).unwrap();
-
     stdout.flush().unwrap();
   }
 }
