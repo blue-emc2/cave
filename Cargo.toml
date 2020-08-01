@@ -17,3 +17,6 @@ name = "fill_rect"
 
 [[example]]
 name = "render_texture"
+
+[[example]]
+name = "movement_1"
