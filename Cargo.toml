@@ -20,3 +20,6 @@ name = "render_texture"
 
 [[example]]
 name = "movement_1"
+
+[[example]]
+name = "animation"
