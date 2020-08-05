@@ -1,3 +1,7 @@
+mod animator;
+mod components;
+mod physics;
+
 use sdl2::event::Event;
 use sdl2::image::{self, InitFlag, LoadTexture};
 use sdl2::keyboard::Keycode;
@@ -7,50 +11,7 @@ use sdl2::rect::Rect;
 use sdl2::render::{Texture, WindowCanvas};
 use std::time::Duration;
 
-use specs::prelude::*;
-use specs_derive::Component;
-
 const PLAYER_MOVEMENT_SPEED: i32 = 20;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Direction {
-  Up,
-  Down,
-  Left,
-  Right,
-}
-
-// 現在位置を表すエンティティ
-#[derive(Component, Debug)]
-#[storage(VecStorage)]
-struct Position(Point);
-
-// 方向と速さを表すエンティティ
-#[derive(Component, Debug)]
-#[storage(VecStorage)]
-struct Velocity {
-  speed: i32,
-  direction: Direction,
-}
-
-#[derive(Component, Debug, Clone)]
-#[storage(VecStorage)]
-struct Sprite {
-  // レンダリングするスプライトシートを表す番号
-  spritesheet: usize,
-  // レンダリングするスプライトの領域
-  region: Rect,
-}
-
-#[derive(Component, Debug)]
-#[storage(VecStorage)]
-struct MovementAnimation {
-  current_frame: usize,
-  up_frames: Vec<Sprite>,
-  down_frames: Vec<Sprite>,
-  left_frames: Vec<Sprite>,
-  right_frames: Vec<Sprite>,
-}
 
 fn direction_spritesheet_row(direction: Direction) -> i32 {
   use self::Direction::*;
@@ -89,20 +50,10 @@ fn render(
 }
 
 fn update_player(player: &mut Player) {
-  use self::Direction::*;
-  match player.direction {
-    Left => {
-      player.position = player.position.offset(-player.speed, 0);
-    }
-    Right => {
-      player.position = player.position.offset(player.speed, 0);
-    }
-    Up => {
-      player.position = player.position.offset(0, -player.speed);
-    }
-    Down => {
-      player.position = player.position.offset(0, player.speed);
-    }
+  // 移動中のみアニメーションする
+  if player.speed != 0 {
+    // 3より大きくならないようにフレームを調整する
+    player.current_frame = (player.current_frame + 1) % 3;
   }
 }
 
@@ -261,7 +212,7 @@ fn main() {
 
     i = (i + 1) % 255;
 
-    update_player(&mut player);
+    // TODO: Do with specs!
 
     render(&mut canvas, Color::RGB(i, 64, 255 - i), &texture, &player).unwrap();
 
