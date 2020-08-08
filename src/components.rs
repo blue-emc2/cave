@@ -41,3 +41,7 @@ pub struct MovementAnimation {
   pub left_frames: Vec<Sprite>,
   pub right_frames: Vec<Sprite>,
 }
+
+#[derive(Component, Debug, Default)]
+#[storage(NullStorage)]
+pub struct KeyboardControlled;

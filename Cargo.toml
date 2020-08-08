@@ -25,6 +25,3 @@ name = "movement_1"
 
 [[example]]
 name = "animation"
-
-[[example]]
-name = "learning_ecs"

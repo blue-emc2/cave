@@ -2,7 +2,7 @@ use specs::prelude::*;
 
 use crate::components::*;
 
-struct Animator;
+pub struct Animator;
 
 impl<'a> System<'a> for Animator {
   type SystemData = (
@@ -14,7 +14,7 @@ impl<'a> System<'a> for Animator {
   fn run(&mut self, mut data: Self::SystemData) {
     use self::Direction::*;
 
-    for (anim, sprite, vel) in (&mut data.0, &data.1, &data.2).join() {
+    for (anim, sprite, vel) in (&mut data.0, &mut data.1, &data.2).join() {
       if vel.speed == 0 {
         continue;
       }
